@@ -27,15 +27,85 @@ st.set_page_config(
 def add_custom_css():
     st.markdown("""
     <style>
+    /* Animated gradient background for app (optional) */
     .stApp {
-        background-color: #ffffff;
-        color: #111111;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
     }
-    .css-1d391kg { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-radius:10px; }
-    .block-container { background: rgba(255,255,255,0.95); border-radius:15px; padding:2rem; margin:1rem; box-shadow:0 8px 32px rgba(31,38,135,0.05); border:1px solid rgba(0,0,0,0.05); }
-    .metric-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding:1rem; border-radius:10px; color:white; text-align:center; margin:0.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.2); }
-    .stButton > button { background: linear-gradient(45deg,#667eea 0%,#764ba2 100%); color:white; border:none; border-radius:20px; padding:0.5rem 2rem; font-weight:bold; }
-    .main-title { text-align:center; color:#2c3e50; margin-bottom:2rem; font-size:2.5rem; font-weight:bold; }
+
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Sidebar styling */
+    .css-1d391kg {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+    }
+
+    /* Main content styling */
+    .block-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 1rem;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    /* Metric cards */
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1rem;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Success/Error styling */
+    .stSuccess {
+        background: linear-gradient(90deg, #00C851, #007E33);
+        color: white;
+        border-radius: 10px;
+    }
+
+    .stError {
+        background: linear-gradient(90deg, #ff4444, #CC0000);
+        color: white;
+        border-radius: 10px;
+    }
+
+    /* Prediction section styling */
+    .prediction-section {
+        background-color: #ffffff !important;
+        color: #111111 !important;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 0.5rem 2rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
     </style>
     """, unsafe_allow_html=True)
 
