@@ -247,7 +247,7 @@ def main():
     # Train Model# -------------------------------
 # Train Model Section
 # -------------------------------
-elif choice == "🔧 Train Model":
+elif choice == "Train Model":
     st.subheader("🚀 Train a New Model")
     
     col1, col2 = st.columns([2, 1])
