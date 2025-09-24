@@ -257,5 +257,5 @@ def main():
         - *Last Updated*: {datetime.now().strftime('%Y-%m-%d')}
         """)
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
