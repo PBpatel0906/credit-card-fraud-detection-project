@@ -244,26 +244,85 @@ def main():
         st.write(f"Fraud cases: {sample_data['Class'].sum()}")
         st.write(f"Legitimate cases: {len(sample_data)-sample_data['Class'].sum()}")
 
-    # Train Model
-    elif choice == "Train Model":
-        st.subheader("🚀 Train a New Model")
-        uploaded_file = st.file_uploader("Upload your dataset (CSV or Excel)", type=['csv', 'xlsx', 'xls'])
+    # Train Model# -------------------------------
+# Train Model Section
+# -------------------------------
+elif choice == "🔧 Train Model":
+    st.subheader("🚀 Train a New Model")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        uploaded_file = st.file_uploader(
+            "Upload your dataset (CSV or Excel)", 
+            type=['csv', 'xlsx', 'xls'],
+            help="Upload a file containing credit card transaction data"
+        )
+    
+    with col2:
         use_sample = st.checkbox("Use Sample Data", value=True)
-
-        if st.button("🔥 Start Training"):
-            if uploaded_file and not use_sample:
-                data = load_uploaded_data(uploaded_file)
+    
+    # Load data safely
+    if uploaded_file and not use_sample:
+        try:
+            if uploaded_file.name.endswith('.csv'):
+                data = pd.read_csv(uploaded_file)
             else:
+                data = pd.read_excel(uploaded_file)
+            
+            required_cols = ['Class'] + [f'V{i}' for i in range(1, 29)] + ['Time', 'Amount']
+            missing_cols = [col for col in required_cols if col not in data.columns]
+            
+            if missing_cols:
+                st.warning(f"Missing columns: {missing_cols}")
+                st.info("Using sample data instead.")
                 data = load_sample_data()
-                st.info("Using sample data.")
-
-            if data is not None:
-                st.write(f"Dataset shape: {data.shape}")
-                model_data = train_model(data)
-                if model_data and save_model(model_data):
-                    st.success("✅ Model trained and saved successfully!")
-                    st.metric("Accuracy", f"{model_data['accuracy']:.4f}")
-
+                
+        except Exception as e:
+            st.error(f"Error loading uploaded file: {e}")
+            data = load_sample_data()
+    else:
+        data = load_sample_data()
+        st.info("Using sample data for demonstration")
+    
+    # Show dataset info
+    st.write(f"📊 Dataset shape: {data.shape}")
+    with st.expander("👀 Data Preview"):
+        st.dataframe(data.head())
+        st.write(f"*Fraud cases:* {data['Class'].sum()}")
+        st.write(f"*Legitimate cases:* {len(data) - data['Class'].sum()}")
+    
+    # Start training
+    if st.button("🔥 Start Training", type="primary"):
+        with st.spinner("🔄 Training model... This may take a few minutes."):
+            model_data = train_model(data)
+            
+            if model_data:
+                # Save model
+                if save_model(model_data):
+                    st.success(f"✅ Model trained and saved successfully!")
+                    st.balloons()
+                    
+                    # Display metrics
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("Accuracy", f"{model_data['accuracy']:.4f}")
+                        st.metric("Precision", f"{model_data['report']['1']['precision']:.4f}" 
+                                  if '1' in model_data['report'] else "N/A")
+                    with col2:
+                        st.metric("Recall", f"{model_data['report']['1']['recall']:.4f}" 
+                                  if '1' in model_data['report'] else "N/A")
+                        st.metric("F1-Score", f"{model_data['report']['1']['f1-score']:.4f}" 
+                                  if '1' in model_data['report'] else "N/A")
+                    
+                    # Confusion matrix
+                    fig = plot_confusion_matrix(model_data['confusion_matrix'])
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                else:
+                    st.error("❌ Failed to save model. Check permissions.")
+            else:
+                st.error("❌ Model training failed. Check the dataset.")
     # Predict
     elif choice == "Predict":
         st.subheader("🔍 Make a Prediction")
