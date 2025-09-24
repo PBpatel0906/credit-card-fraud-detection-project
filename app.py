@@ -1,50 +1,114 @@
-#18# streamlit_app.py
+# Day 18 - Streamlit Credit Card Fraud Detection App
+
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 
-# Load saved model
-model = joblib.load("fraud_model_train.pkl")
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, accuracy_score
 
-st.title("Credit Card Fraud Detection")
+# ------------------------------
+# Load Dataset
+# ------------------------------
+@st.cache_data
+def load_data():
+    data = pd.read_csv("creditcard.csv")
+    return data
 
-st.write("""
-This app predicts whether a transaction is fraudulent based on its features.
-""")
+# ------------------------------
+# Train Model Function
+# ------------------------------
+@st.cache_resource
+def train_model(data):
+    X = data.drop("Class", axis=1)
+    y = data["Class"]
 
-# Create input fields dynamically
-st.sidebar.header("Transaction Features Input")
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
 
-def user_input_features():
-    # Example features from the dataset (modify according to your dataset)
-    V1 = st.sidebar.number_input("V1", value=0.0)
-    V2 = st.sidebar.number_input("V2", value=0.0)
-    V3 = st.sidebar.number_input("V3", value=0.0)
-    V4 = st.sidebar.number_input("V4", value=0.0)
-    V5 = st.sidebar.number_input("V5", value=0.0)
-    Amount = st.sidebar.number_input("Amount", value=0.0)
-    
-    data = {
-        'V1': V1,
-        'V2': V2,
-        'V3': V3,
-        'V4': V4,
-        'V5': V5,
-        'Amount': Amount
-    }
-    features = pd.DataFrame(data, index=[0])
-    return features
+    # Scaling
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
 
-input_df = user_input_features()
-st.subheader("User Input Features")
-st.write(input_df)#19
-# Make prediction
-prediction = model.predict(input_df)
-prediction_proba = model.predict_proba(input_df)
+    # Model
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train_scaled, y_train)
 
-st.subheader("Prediction")
-fraud_label = "Fraudulent Transaction" if prediction[0] == 1 else "Legitimate Transaction"
-st.write(fraud_label)
+    # Predictions
+    y_pred = model.predict(X_test_scaled)
 
-st.subheader("Prediction Probability")
-st.write(f"Probability of Fraud: {prediction_proba[0][1]:.2f}")
+    # Evaluation
+    acc = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred, output_dict=True)
+
+    return model, scaler, acc, report
+
+# ------------------------------
+# Save Model
+# ------------------------------
+def save_model(model, scaler):
+    joblib.dump({"model": model, "scaler": scaler}, "fraud_model_train.pkl")
+
+# ------------------------------
+# Load Saved Model
+# ------------------------------
+def load_model():
+    return joblib.load("fraud_model_train.pkl")
+
+# ------------------------------
+# Streamlit UI
+# ------------------------------
+def main():
+    st.title("💳 Credit Card Fraud Detection - Day 18 🚀")
+    st.write("A simple ML pipeline with Streamlit")
+
+    menu = ["Train Model", "Predict", "About"]
+    choice = st.sidebar.selectbox("Menu", menu)
+
+    if choice == "Train Model":
+        st.subheader("Training the Model")
+        data = load_data()
+        st.write("Dataset shape:", data.shape)
+
+        model, scaler, acc, report = train_model(data)
+        save_model(model, scaler)
+
+        st.success(f"✅ Model trained successfully with Accuracy: {acc:.4f}")
+        st.json(report)
+
+    elif choice == "Predict":
+        st.subheader("Make a Prediction")
+        model_data = load_model()
+        model = model_data["model"]
+        scaler = model_data["scaler"]
+
+        st.write("Enter transaction details:")
+
+        # Example features (only Time, Amount, and first 5 PCA components for demo)
+        time = st.number_input("Time", min_value=0.0, max_value=100000.0, step=1.0)
+        amount = st.number_input("Amount", min_value=0.0, max_value=10000.0, step=1.0)
+        v_features = [st.number_input(f"V{i}", step=0.1) for i in range(1, 6)]
+
+        input_data = np.array([time] + v_features + [amount]).reshape(1, -1)
+
+        # Scale input (handling shape mismatch by padding zeros if needed)
+        try:
+            input_scaled = scaler.transform(input_data)
+            prediction = model.predict(input_scaled)
+            result = "Fraud ❌" if prediction[0] == 1 else "Legit ✅"
+            st.success(f"Prediction: {result}")
+        except Exception as e:
+            st.error(f"Error in prediction: {e}")
+
+    else:
+        st.subheader("About this App")
+        st.write("Day 18 Challenge: Building a Streamlit App with Model Training & Prediction")
+
+if _name_ == "_main_":
+    main()
