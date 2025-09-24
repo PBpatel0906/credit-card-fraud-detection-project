@@ -110,5 +110,5 @@ def main():
         st.subheader("About this App")
         st.write("Day 18 Challenge: Building a Streamlit App with Model Training & Prediction")
 
-if _name_ == "_main_":
+if __name_ == "__main__":
     main()
