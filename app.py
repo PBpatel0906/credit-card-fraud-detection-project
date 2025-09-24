@@ -31,6 +31,13 @@ def add_custom_css():
         background-color: #ffffff;
         color: #111111;
     }
+    /* Prediction section styling */
+    .prediction-section {
+        background-color: #ffffff !important;  /* white background */
+        color: #000000 !important;            /* black text */
+        padding: 20px;
+        border-radius: 10px;
+   }
     .css-1d391kg { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-radius:10px; }
     .block-container { background: rgba(255,255,255,0.95); border-radius:15px; padding:2rem; margin:1rem; box-shadow:0 8px 32px rgba(31,38,135,0.05); border:1px solid rgba(0,0,0,0.05); }
     .metric-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding:1rem; border-radius:10px; color:white; text-align:center; margin:0.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.2); }
