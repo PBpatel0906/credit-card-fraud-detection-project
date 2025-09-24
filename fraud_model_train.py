@@ -1,0 +1,43 @@
+# fraud_model_train.py
+
+# Import libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import joblib
+import os
+
+# Load your dataset
+# Replace the path with your CSV file location
+data = pd.read_csv("creditcard.csv")  
+
+# Features & target
+X = data.drop("Class", axis=1)  # 'Class' is target column
+y = data["Class"]
+
+# Split into train/test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Evaluate model
+y_pred = model.predict(X_test_scaled)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+# Save the trained model to Desktop
+desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+model_file_path = os.path.join(desktop_path, "fraud_model.pkl")
+
+joblib.dump(model, model_file_path)
+print(f"Model saved successfully at: {model_file_path}")
