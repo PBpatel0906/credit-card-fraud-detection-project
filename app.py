@@ -27,28 +27,30 @@ st.set_page_config(
 def add_custom_css():
     st.markdown("""
     <style>
+    /* Main background and font */
     .stApp {
-        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        background-color: #ffffff;  /* White background */
+        color: #1a1a1a;             /* Dark font for readability */
     }
 
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* Sidebar styling */
+    .css-1d391kg {
+        background: rgba(230, 230, 230, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
     }
 
+    /* Main content container */
     .block-container {
-        background: rgba(255, 255, 255, 0.95);
+        background: #ffffff;         /* White container */
         border-radius: 15px;
         padding: 2rem;
         margin: 1rem;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        backdrop-filter: blur(4px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+        color: #1a1a1a;             /* Dark font color */
     }
 
+    /* Metric cards */
     .metric-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 1rem;
@@ -59,6 +61,7 @@ def add_custom_css():
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
+    /* Buttons styling */
     .stButton > button {
         background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -75,23 +78,13 @@ def add_custom_css():
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
 
+    /* Titles */
     .main-title {
         text-align: center;
-        color: #2c3e50;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
+        color: #1a1a1a;
         font-size: 3rem;
         font-weight: bold;
-    }
-
-    .floating {
-        animation: floating 3s ease-in-out infinite;
-    }
-
-    @keyframes floating {
-        0% { transform: translate(0, 0px); }
-        50% { transform: translate(0, -10px); }
-        100% { transform: translate(0, 0px); }
+        margin-bottom: 2rem;
     }
     </style>
     """, unsafe_allow_html=True)
