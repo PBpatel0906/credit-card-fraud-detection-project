@@ -247,43 +247,37 @@ def main():
     # Train Model# -------------------------------
 # Train Model Section
 # -------------------------------
-elif choice == "Train Model":
-    st.subheader("🚀 Train a New Model")
-    
-    col1, col2 = st.columns([2, 1])
-    
-    with col1:
-        uploaded_file = st.file_uploader(
+    elif choice == "Train Model":
+        st.subheader("🚀 Train a New Model")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            uploaded_file = st.file_uploader(
             "Upload your dataset (CSV or Excel)", 
             type=['csv', 'xlsx', 'xls'],
             help="Upload a file containing credit card transaction data"
         )
+            with col2:
+                use_sample = st.checkbox("Use Sample Data", value=True)
     
-    with col2:
-        use_sample = st.checkbox("Use Sample Data", value=True)
-    
-    # Load data safely
-    if uploaded_file and not use_sample:
+    # Load data safel
+        if uploaded_file and not use_sample:
         try:
             if uploaded_file.name.endswith('.csv'):
                 data = pd.read_csv(uploaded_file)
             else:
                 data = pd.read_excel(uploaded_file)
-            
-            required_cols = ['Class'] + [f'V{i}' for i in range(1, 29)] + ['Time', 'Amount']
-            missing_cols = [col for col in required_cols if col not in data.columns]
-            
+                required_cols = ['Class'] + [f'V{i}' for i in range(1, 29)] + ['Time', 'Amount']
+                missing_cols = [col for col in required_cols if col not in data.columns]
             if missing_cols:
                 st.warning(f"Missing columns: {missing_cols}")
                 st.info("Using sample data instead.")
                 data = load_sample_data()
-                
-        except Exception as e:
-            st.error(f"Error loading uploaded file: {e}")
-            data = load_sample_data()
-    else:
-        data = load_sample_data()
-        st.info("Using sample data for demonstration")
+            except Exception as e:
+                st.error(f"Error loading uploaded file: {e}")
+                data = load_sample_data()
+            else:
+                data = load_sample_data()
+                st.info("Using sample data for demonstration")
     
     # Show dataset info
     st.write(f"📊 Dataset shape: {data.shape}")
