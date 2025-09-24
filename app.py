@@ -150,7 +150,7 @@ def train_model(data):
         model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
         model.fit(X_train_scaled, y_train)
 
-       y_pred_proba_raw = model.predict_proba(X_test_scaled)
+        y_pred_proba_raw = model.predict_proba(X_test_scaled)
         if y_pred_proba_raw.shape[1] == 2:
             y_pred_proba = y_pred_proba_raw[:, 1]
         else:
