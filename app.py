@@ -234,7 +234,7 @@ def main():
                 else:
                     st.success("✅ Legitimate Transaction")
                 st.metric("Fraud Probability", f"{probability:.4f}")
-st.markdown("</div>", unsafe_allow_html= True)
+                st.markdown("</div>", unsafe_allow_html= True)
     # -------------------------------
     # Analytics
     elif choice=="📊 Analytics":
