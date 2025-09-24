@@ -4,7 +4,7 @@ import pandas as pd
 import joblib
 
 # Load saved model
-model = joblib.load("fraud_model_train.py")
+model = joblib.load("fraud_model_train.pkl")
 
 st.title("Credit Card Fraud Detection")
 
